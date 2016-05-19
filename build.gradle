@@ -1,0 +1,82 @@
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+
+    idea {
+        module {
+            downloadSources = true
+            downloadJavadoc = true
+            //and some extra integration test source and resources dirs
+            testSourceDirs += file('/src/integration/java')
+            testSourceDirs += file('/src/integration/resources')
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "http://repo.spring.io/libs-milestone" }
+        maven { url "http://repo1.maven.org/maven2/" }
+    }
+
+    dependencies {
+        compile "$springGroup:spring-aop:$springVersion"
+        compile "$springGroup:spring-aspects:$springVersion"
+        compile "$springGroup:spring-beans:$springVersion"
+        compile "$springGroup:spring-context:$springVersion"
+        compile "$springGroup:spring-context-support:$springVersion"
+        compile "$springGroup:spring-core:$springVersion"
+        compile "$springGroup:spring-expression:$springVersion"
+        compile "$springGroup:spring-instrument:$springVersion"
+        compile "$springGroup:spring-instrument-tomcat:$springVersion"
+        compile "$springGroup:spring-jms:$springVersion"
+        compile "$springGroup:spring-oxm:$springVersion"
+        compile "$springGroup:spring-test:$springVersion"
+        compile "$springGroup:spring-tx:$springVersion"
+        compile "$springGroup:spring-web:$springVersion"
+        compile "$springGroup:spring-webmvc:$springVersion"
+
+        compile "$springSecurityGroup:spring-security-aspects:$springSecurityVersion"
+        compile "$springSecurityGroup:spring-security-config:$springSecurityVersion"
+        compile "$springSecurityGroup:spring-security-core:$springSecurityVersion"
+        compile "$springSecurityGroup:spring-security-crypto:$springSecurityVersion"
+        compile "$springSecurityGroup:spring-security-taglibs:$springSecurityVersion"
+        compile "$springSecurityGroup:spring-security-web:$springSecurityVersion"
+        compile 'org.springframework.webflow:spring-webflow:2.4.2.RELEASE'
+
+        compile 'ch.qos.logback:logback-core:1.1.7'
+        compile 'ch.qos.logback:logback-classic:1.1.7'
+        compile 'net.logstash.logback:logstash-logback-encoder:4.6'
+
+        testCompile group: 'junit', name: 'junit', version: '4.+'
+    }
+}
+
+project(':service') {
+}
+
+project(':web') {
+    apply plugin: 'war'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile project(':service')
+
+        providedCompile 'javax.servlet:javax.servlet-api:3.1.+'
+        runtime 'javax.servlet:jstl:1.+'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
+}
