@@ -25,13 +25,18 @@ import com.sampler.service.SomeService;
 public class HomeController {
     private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
 
-    @Autowired private SomeService someService;
+    private final SomeService someService;
+
+    @Autowired
+    public HomeController(SomeService someService) {
+        this.someService = someService;
+    }
 
     @RequestMapping (method = {RequestMethod.GET})
     public String getIndexPage() {
         LOG.info("Reached home");
         boolean called = someService.callMe();
         LOG.info("Called service {}", called);
-        return "home";
+        return "showHome";
     }
 }

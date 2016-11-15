@@ -17,7 +17,9 @@
     <!-- Configures the @Controller programming model -->
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
-    <mvc:view-controller path="/" view-name="home"/>
+    <mvc:view-controller path="/" view-name="showHome"/>
+
+    <mvc:resources mapping="/static/**" location="/static/" cache-period="31556926" />
 
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="favorPathExtension" value="false" />
