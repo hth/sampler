@@ -1,69 +1,99 @@
+if (!hasProperty('env')) {
+    ext.env = System.env['GRADLE_ENV']
+}
+
+println "Building for environment: $env"
+
+ext {
+    archiveName = "sampler"
+}
 
 buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
+    dependencies {
+    }
+}
+
+apply plugin: 'maven-publish'
+
+allprojects {
+    group = 'com.sampler'
+    apply from: "$rootDir/versioning.gradle"
 }
 
 subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
 
+    compileJava {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+        // Detecting annotation processors on the compile classpath is deprecated and Gradle 5.0 will ignore them.
+        options.compilerArgs += ["-proc:none"]
+    }
+
+    sourceSets {
+        test {
+            resources.srcDirs = ['src/test/resources']
+            java.srcDirs = ['src/test/java']
+        }
+    }
+
     idea {
         module {
             downloadSources = true
             downloadJavadoc = true
-            //and some extra integration test source and resources dirs
-            testSourceDirs += file('/src/integration/java')
-            testSourceDirs += file('/src/integration/resources')
         }
     }
 
     repositories {
         mavenCentral()
-        maven { url "http://repo.spring.io/libs-milestone" }
-        maven { url "http://repo1.maven.org/maven2/" }
+        maven { url "https://repo.spring.io/libs-milestone" }
+        maven { url "https://repo1.maven.org/maven2/" }
+        maven { url 'https://repo.spring.io/libs-snapshot' }
     }
 
     dependencies {
-        compile "$springGroup:spring-aop:$springVersion"
-        compile "$springGroup:spring-aspects:$springVersion"
-        compile "$springGroup:spring-beans:$springVersion"
-        compile "$springGroup:spring-context:$springVersion"
-        compile "$springGroup:spring-context-support:$springVersion"
-        compile "$springGroup:spring-core:$springVersion"
-        compile "$springGroup:spring-expression:$springVersion"
-        compile "$springGroup:spring-instrument:$springVersion"
-        compile "$springGroup:spring-instrument-tomcat:$springVersion"
-        compile "$springGroup:spring-jms:$springVersion"
-        compile "$springGroup:spring-oxm:$springVersion"
-        compile "$springGroup:spring-test:$springVersion"
-        compile "$springGroup:spring-tx:$springVersion"
-        compile "$springGroup:spring-web:$springVersion"
-        compile "$springGroup:spring-webmvc:$springVersion"
+        implementation "$springGroup:spring-aop:$springVersion"
+        implementation "$springGroup:spring-aspects:$springVersion"
+        implementation "$springGroup:spring-beans:$springVersion"
+        implementation "$springGroup:spring-context:$springVersion"
+        implementation "$springGroup:spring-context-support:$springVersion"
+        implementation "$springGroup:spring-core:$springVersion"
+        implementation "$springGroup:spring-expression:$springVersion"
+        implementation "$springGroup:spring-instrument:$springVersion"
+        implementation "$springGroup:spring-jms:$springVersion"
+        implementation "$springGroup:spring-oxm:$springVersion"
+        implementation "$springGroup:spring-test:$springVersion"
+        implementation "$springGroup:spring-tx:$springVersion"
+        implementation "$springGroup:spring-web:$springVersion"
+        implementation "$springGroup:spring-webmvc:$springVersion"
 
-        compile "$springSecurityGroup:spring-security-aspects:$springSecurityVersion"
-        compile "$springSecurityGroup:spring-security-config:$springSecurityVersion"
-        compile "$springSecurityGroup:spring-security-core:$springSecurityVersion"
-        compile "$springSecurityGroup:spring-security-crypto:$springSecurityVersion"
-        compile "$springSecurityGroup:spring-security-taglibs:$springSecurityVersion"
-        compile "$springSecurityGroup:spring-security-web:$springSecurityVersion"
-        compile 'org.springframework.webflow:spring-webflow:2.4.2.RELEASE'
+        implementation "$springSecurityGroup:spring-security-aspects:$springSecurityVersion"
+        implementation "$springSecurityGroup:spring-security-config:$springSecurityVersion"
+        implementation "$springSecurityGroup:spring-security-core:$springSecurityVersion"
+        implementation "$springSecurityGroup:spring-security-crypto:$springSecurityVersion"
+        implementation "$springSecurityGroup:spring-security-taglibs:$springSecurityVersion"
+        implementation "$springSecurityGroup:spring-security-web:$springSecurityVersion"
 
-        compile 'ch.qos.logback:logback-core:1.1.7'
-        compile 'ch.qos.logback:logback-classic:1.1.7'
-        compile 'net.logstash.logback:logstash-logback-encoder:4.6'
-
-        testCompile group: 'junit', name: 'junit', version: '4.+'
+        implementation "$springDataGroup:spring-data-mongodb:$springDataMongo"
+        implementation "$springDataGroup:spring-data-commons:$springDataCommon"
+        implementation "org.mongodb:mongo-java-driver:$mongoJavaDriver"
     }
 }
 
 project(':service') {
+    jar.archiveBaseName = archiveName + '-service'
 }
 
-project(':web') {
+project(':view') {
     apply plugin: 'war'
+    jar.archiveBaseName = archiveName + '-view'
+    war.archiveBaseName = archiveName + '-view'
 
     repositories {
         mavenCentral()
@@ -72,11 +102,9 @@ project(':web') {
     dependencies {
         compile project(':service')
 
-        providedCompile 'javax.servlet:javax.servlet-api:3.1.+'
-        runtime 'javax.servlet:jstl:1.+'
+        providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
+//        runtimeOnly 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.2'
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.1'
-}
+defaultTasks 'clean'
