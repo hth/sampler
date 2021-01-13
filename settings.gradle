@@ -1,2 +1,3 @@
-include "service", "web"
+include "service",
+        "view",
 rootProject.name = 'sampler'

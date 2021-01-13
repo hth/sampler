@@ -17,7 +17,7 @@
     <!-- Configures the @Controller programming model -->
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
-    <mvc:view-controller path="/" view-name="showHome"/>
+<!--    <mvc:view-controller path="/" view-name="showHome"/>-->
 
     <mvc:resources mapping="/static/**" location="/static/" cache-period="31556926" />
 
@@ -31,14 +31,6 @@
                 <entry key="xml"    value="application/xml" />
             </map>
         </property>
-    </bean>
-
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-        <property name="prefix" value="/WEB-INF/jsp/" />
-        <property name="suffix" value=".jsp" />
-        <property name="cache"  value="true" />
-        <property name="order"  value="1" />
     </bean>
 
 </beans>
