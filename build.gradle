@@ -73,16 +73,8 @@ subprojects {
         implementation "$springGroup:spring-web:$springVersion"
         implementation "$springGroup:spring-webmvc:$springVersion"
 
-        implementation "$springSecurityGroup:spring-security-aspects:$springSecurityVersion"
-        implementation "$springSecurityGroup:spring-security-config:$springSecurityVersion"
-        implementation "$springSecurityGroup:spring-security-core:$springSecurityVersion"
-        implementation "$springSecurityGroup:spring-security-crypto:$springSecurityVersion"
-        implementation "$springSecurityGroup:spring-security-taglibs:$springSecurityVersion"
-        implementation "$springSecurityGroup:spring-security-web:$springSecurityVersion"
-
-        implementation "$springDataGroup:spring-data-mongodb:$springDataMongo"
-        implementation "$springDataGroup:spring-data-commons:$springDataCommon"
-        implementation "org.mongodb:mongo-java-driver:$mongoJavaDriver"
+        implementation "ch.qos.logback:logback-core:$logback"
+        implementation "ch.qos.logback:logback-classic:$logback"
     }
 }
 

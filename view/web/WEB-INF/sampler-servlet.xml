@@ -17,7 +17,7 @@
     <!-- Configures the @Controller programming model -->
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
-    <mvc:view-controller path="/" view-name="showHome"/>
+<!--    <mvc:view-controller path="/" view-name="showHome"/>-->
 
     <mvc:resources mapping="/static/**" location="/static/" cache-period="31556926" />
 
