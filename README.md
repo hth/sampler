@@ -14,4 +14,4 @@ deployed, and you should see Hello. URL [http://localhost:8080/open/home.htm](ht
 
 # Artifact Setup
 
-Follow the image ![Image of Artifacy](https://github.com/hth/sample/images/artifact.png)
+Follow the image ![Image of Artifact](https://github.com/hth/sampler/blob/master/images/artifact.png?raw=true)
