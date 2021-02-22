@@ -5,6 +5,18 @@ if (!hasProperty('env')) {
 println "Building for environment: $env"
 
 ext {
+    webInf = file('/WEB-INF')
+    lib = file("$webInf/lib")
+    javaClasses = file("$webInf/classes")
+
+    warDir = file("$buildDir/explodedWar/$env")
+    warWebInfDir = file("$warDir$webInf")
+    warLibDir = file("$warDir$lib")
+    warClassesDir = file("$warDir$javaClasses")
+
+    unzipDir = file("${buildDir}/unpacked/dist")
+    unzipLibDir = file("$unzipDir$lib")
+
     archiveName = "sampler"
 }
 
@@ -98,4 +110,54 @@ project(':view') {
     }
 }
 
-defaultTasks 'clean'
+task copyJars(type: Copy) {
+    from 'service/build/libs'
+    from 'view/build/libs'
+    into warLibDir
+    include '**/*.jar'
+}
+
+task unzip(type: Copy, dependsOn: [':view:war']) {
+    def zipFile = file("view/build/libs/$archiveName" + '-view-' + version + '.war')
+
+    from zipTree(zipFile)
+    into unzipDir
+}
+
+task prepWar(dependsOn: [
+        unzip,
+        copyJars
+]) {
+    doLast {
+        warClassesDir.mkdirs()
+
+        copy {
+            from ('view/web') {
+                exclude "**/logback.xml"
+            }
+            into warDir
+        }
+
+        copy {
+            from "view/web/WEB-INF/logback.xml"
+            into warClassesDir
+        }
+
+        copy {
+            from unzipLibDir
+            into warLibDir
+        }
+    }
+}
+
+task war(type: War, dependsOn: prepWar) {
+    doFirst {
+    }
+
+    archiveBaseName = "ROOT"
+    from warDir
+    version ""
+    destinationDirectory = file("$buildDir/war/$env")
+}
+
+defaultTasks 'clean', 'jar', 'war'
