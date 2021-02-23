@@ -22,15 +22,8 @@
     <mvc:resources mapping="/static/**" location="/static/" cache-period="31556926" />
 
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-        <property name="favorPathExtension" value="false" />
         <property name="favorParameter"     value="true" />
-        <property name="mediaTypes">
-            <map>
-                <entry key="html"   value="text/html" />
-                <entry key="json"   value="application/json" />
-                <entry key="xml"    value="application/xml" />
-            </map>
-        </property>
+        <property name="ignoreAcceptHeader" value="true"/>
     </bean>
 
 </beans>
